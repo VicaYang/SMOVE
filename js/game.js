@@ -207,7 +207,7 @@ function generateBonus() {
 function nextLevel(){
     bonus.draw = true;
     switch(level){
-        case 1: doBallLoop();ballLoop = setInterval(doBallLoop, 4000 / n);break;
+        case 1: doBallLoop();ballLoop = setInterval(doBallLoop, 6000 / n);break;
         case 2: doBallLoop();ballLoop = setInterval(doBallLoop, 6000 / n);break;
         case 3:doBallLoop();ballLoop = setInterval(doBallLoop, 6000 / n);break;
         case 4:doBallLoop();ballLoop = setInterval(doBallLoop, 10000 / n);break;
