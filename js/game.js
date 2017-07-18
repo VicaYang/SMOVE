@@ -74,7 +74,7 @@ function gameStart() {
     drawPlayer();
     doBallLoop();
     gameLoop = setInterval(doGameLoop, 10);
-    ballLoop = setInterval(doBallLoop, 5000/n);
+    ballLoop = setInterval(doBallLoop, 5000 / Math.sqrt(n));
 
 }
 function gameOver() {
