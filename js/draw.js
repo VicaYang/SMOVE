@@ -123,5 +123,5 @@ function drawAll(){
     ctx.fillStyle = bgrColor.color; 
     ctx.fillRect(-marginLeft, -marginTop, canvas.width, canvas.height);
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(score,-marginMin * 0.5, -marginMin * 0.5);
+    ctx.fillText(score,-marginMin * 0.8, -marginMin * 0.5);
 }
