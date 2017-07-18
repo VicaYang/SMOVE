@@ -64,7 +64,6 @@ function gameStart() {
         bonus.x = bonus.y = (n - 1) * unit;
         player.x = player.y = (n + 1) * unit;
     }
-
     player.step = 0;
     player.direction = -1;
     document.getElementById("begin").style.display="none";

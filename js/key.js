@@ -67,6 +67,7 @@ function resize(){
         for (let elem of balls) {
             elem.x *= ratio;
             elem.y *= ratio;
+            elem.speed *= ratio;
         }
         drawAll();
         gameLoop = setInterval(doGameLoop, 10);
