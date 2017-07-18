@@ -48,6 +48,8 @@ function handleCancel(evt) {
 }
 function resize(){
     clearInterval(gameLoop);
+    ctx.fillStyle = bgrColor.color; 
+    ctx.fillRect(-marginLeft, -marginTop, canvas.width, canvas.height);
     ctx.translate(-marginLeft, -marginTop);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -73,7 +75,7 @@ function resize(){
         drawPlayer();
         ctx.fillStyle="#FFFFFF";   
         ctx.font="40px Georgia";
-        ctx.fillText(score,-marginMin *0.75,-marginMin*0.75);
+        ctx.fillText(score, -marginMin * 0.75, -marginMin * 0.75);
         gameLoop = setInterval(doGameLoop, 10);
     }
 }
