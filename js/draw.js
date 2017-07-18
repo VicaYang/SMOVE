@@ -116,6 +116,8 @@ function changeColor(){
     } else {
         if (Math.abs(bgrColor.textAlpha) > 0.01)
             bgrColor.textAlpha -= 0.01;
+        else
+            bgrColor.alphaIncrease=true;
     }
 }
 function drawAll(){
