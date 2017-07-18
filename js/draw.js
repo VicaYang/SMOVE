@@ -118,3 +118,10 @@ function changeColor(){
             bgrColor.textAlpha -= 0.01;
     }
 }
+function drawAll(){
+    ctx.font="50px Georgia";
+    ctx.fillStyle = bgrColor.color; 
+    ctx.fillRect(-marginLeft, -marginTop, canvas.width, canvas.height);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText(score,-marginMin * 0.5, -marginMin * 0.5);
+}
