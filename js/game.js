@@ -134,7 +134,7 @@ function check(){
         ctx.fillRect(-marginMin, -marginMin, marginMin, marginMin);
         ctx.fillStyle="#FFFFFF";   
         ctx.font="50px Georgia";
-        ctx.fillText(score,-marginMin * 0.5,-marginMin * 0.5);    
+        ctx.fillText(score,-marginMin * 0.8,-marginMin * 0.5);    
         if (score % 10 === 0) {
             bonus.draw = false;
             level++;
