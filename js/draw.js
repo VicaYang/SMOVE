@@ -125,14 +125,15 @@ function changeColor(){
 }
 function drawAll(){
     drawBackground();
-    if (game.pause) {
-        ctx.fillStyle="#FFFFFF";
-        ctx.textAlign='center';
-        ctx.fillText("PAUSED", canvas.width / 2 -  marginLeft, canvas.height / 2  - marginTop);
-    }
+
     if (bonus.draw) 
         drawBonus();   
     drawGrid();
     drawBall();
     drawPlayer();
+    if (game.pause) {
+        ctx.fillStyle="#FFFFFF";
+        ctx.textAlign='center';
+        ctx.fillText("PAUSED", canvas.width / 2 -  marginLeft, canvas.height / 2  - marginTop);
+    }
 }
