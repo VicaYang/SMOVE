@@ -25,6 +25,8 @@ var game = {
     level: 0,
     gameLoop: 0,
     ballLoop: 0,
+    pause: false,
+    period:[5000,3500,3500,3500,6500]
 }
 var player = {
     x: 0,
@@ -82,12 +84,14 @@ function gameStart() {
     document.getElementById("begin").style.display="none";
     document.getElementById("game").style.display="block";
     ctx.fillStyle = bgrColor.color; 
-    ctx.fillRect(-marginLeft, -marginTop, canvas.width, canvas.height);
+    ctx.textAlign='center';
+    ctx.font="50px Georgia";
+    drawBackground();
     drawGrid();
     drawPlayer();
     doBallLoop();
     game.gameLoop = setInterval(doGameLoop, 10);
-    game.ballLoop = setInterval(doBallLoop, 5000 / Math.sqrt(game.n));
+    game.ballLoop = setInterval(doBallLoop, game.period[game.level] / Math.sqrt(game.n));
 
 }
 function gameOver() {
@@ -103,7 +107,22 @@ function gameRestart() {
     document.getElementById("over").style.display="none";
     document.getElementById("begin").style.display="block";
 }
-
+function gamePause() {
+    game.pause = true;
+    clearInterval(game.gameLoop);
+    clearInterval(game.ballLoop);
+    ctx.fillStyle="#FFFFFF";
+    ctx.fillText("PAUSED", canvas.width / 2 -  marginLeft, canvas.height / 2  - marginTop);
+}
+function gameContinue(){
+    game.pause = false;
+    game.gameLoop = setInterval(doGameLoop, 10);
+    drawBackground();
+    if (game.level > 4)
+        game.ballLoop = setInterval(doBallLoop, 1500 / Math.sqrt(game.n))
+    else
+        game.ballLoop = setInterval(doBallLoop, game.period[game.level] / Math.sqrt(game.n))
+}
 
 function doGameLoop() {
     bonus.deg += 0.01;
@@ -111,7 +130,7 @@ function doGameLoop() {
         drawBonus();
     } else {
         changeColor();
-        drawLevelUp();
+        drawBackground();
     }
     drawGrid();
     drawBall();  
@@ -135,7 +154,7 @@ function check(){
         ctx.fillRect(-marginMin, -marginMin, marginMin, marginMin);
         ctx.fillStyle="#FFFFFF";   
         ctx.font="50px Georgia";
-        ctx.fillText(game.score,-marginMin * 0.8,-marginMin * 0.5);    
+        ctx.fillText(game.score,-marginMin * 0.5,-marginMin * 0.5);    
         if (game.score % 10 === 0) {
             bonus.draw = false;
             game.level++;
@@ -208,11 +227,10 @@ function generateBonus() {
 }
 function nextLevel(){
     bonus.draw = true;
-    switch(game.level){
-        case 1: doBallLoop();game.ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(game.n));break;
-        case 2: doBallLoop();game.ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(game.n));break;
-        case 3:doBallLoop();game.ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(game.n));break;
-        case 4:doBallLoop();game.ballLoop = setInterval(doBallLoop, 6000 / Math.sqrt(game.n));break;
-        default:doBallLoop();game.ballLoop = setInterval(doBallLoop, 1500 / Math.sqrt(game.n));break;
-    }
+    bgrColor.alphaIncrease = true;
+    doBallLoop();
+    if (game.level > 4)
+        game.ballLoop = setInterval(doBallLoop, 1500 / Math.sqrt(game.n))
+    else
+        game.ballLoop = setInterval(doBallLoop, game.period[game.level] / Math.sqrt(game.n))
 }

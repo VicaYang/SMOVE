@@ -91,14 +91,17 @@ function drawSmallBall(ball, draw) {
         }
     }
 }
-function drawLevelUp(){
-    ctx.font="50px Georgia";
+function drawBackground(){
     ctx.fillStyle = bgrColor.color; 
     ctx.fillRect(-marginLeft, -marginTop, canvas.width, canvas.height);
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(game.score,-marginMin * 0.8, -marginMin * 0.5);
+    ctx.fillRect(canvas.width-marginLeft - 20, -marginTop + 30, 5, 20);
+    ctx.fillRect(canvas.width-marginLeft - 30, -marginTop + 30, 5, 20);
+    ctx.font="50px Georgia";
+    ctx.fillText(game.score,-marginMin * 0.5, -marginMin * 0.5);
     ctx.fillStyle = "rgba(255,255,255," + bgrColor.textAlpha + ")";
-    ctx.fillText("Level " + game.level, length/3, -marginMin * 0.5);
+    ctx.fillText("Level " + game.level, canvas.width / 2 - marginLeft, -marginMin * 0.5);
+    
 }
 function changeColor(){
     bgrColor.r += bgrColor.dr;
@@ -117,13 +120,19 @@ function changeColor(){
         if (Math.abs(bgrColor.textAlpha) > 0.01)
             bgrColor.textAlpha -= 0.01;
         else
-            bgrColor.alphaIncrease=true;
+            bgrColor.textAlpha = 0;
     }
 }
 function drawAll(){
-    ctx.font="50px Georgia";
-    ctx.fillStyle = bgrColor.color; 
-    ctx.fillRect(-marginLeft, -marginTop, canvas.width, canvas.height);
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(game.score,-marginMin * 0.8, -marginMin * 0.5);
+    drawBackground();
+    if (game.pause) {
+        ctx.fillStyle="#FFFFFF";
+        ctx.textAlign='center';
+        ctx.fillText("PAUSED", canvas.width / 2 -  marginLeft, canvas.height / 2  - marginTop);
+    }
+    if (bonus.draw) 
+        drawBonus();   
+    drawGrid();
+    drawBall();
+    drawPlayer();
 }

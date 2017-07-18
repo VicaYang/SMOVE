@@ -16,6 +16,9 @@ function handleStart(evt) {
     evt.preventDefault();
     touchBegin.x=evt.changedTouches[0].pageX;
     touchBegin.y=evt.changedTouches[0].pageY;
+    if (canvas.width - 100 < touchBegin.x && touchBegin.x < canvas.width  && 0 < touchBegin.y && touchBegin.y <  100 ) {
+        game.pause ? gameContinue() : gamePause();
+    }
 }
 function handleEnd(evt) {
     evt.preventDefault();
@@ -47,7 +50,7 @@ function handleCancel(evt) {
     touchBegin.y = 0;
 }
 function resize(){
-    clearInterval(game.gameLoop);
+    ctx.font="50px Georgia";
     ctx.translate(-marginLeft, -marginTop);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -69,7 +72,6 @@ function resize(){
             elem.y *= ratio;
             elem.speed *= ratio;
         }
-        drawAll();
-        game.gameLoop = setInterval(doGameLoop, 10);
     }
+    drawAll();
 }
