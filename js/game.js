@@ -85,7 +85,6 @@ function gameOver() {
     score = 0;
     level = 0;
     balls.splice(0, balls.length);
- 
 }
 function gameRestart() {
     document.getElementById("over").style.display="none";
@@ -207,10 +206,10 @@ function generateBonus() {
 function nextLevel(){
     bonus.draw = true;
     switch(level){
-        case 1: doBallLoop();ballLoop = setInterval(doBallLoop, 6000 / n);break;
-        case 2: doBallLoop();ballLoop = setInterval(doBallLoop, 6000 / n);break;
-        case 3:doBallLoop();ballLoop = setInterval(doBallLoop, 6000 / n);break;
-        case 4:doBallLoop();ballLoop = setInterval(doBallLoop, 10000 / n);break;
-        default:doBallLoop();ballLoop = setInterval(doBallLoop, 2000 / n);break;
+        case 1: doBallLoop();ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(n));break;
+        case 2: doBallLoop();ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(n));break;
+        case 3:doBallLoop();ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(n));break;
+        case 4:doBallLoop();ballLoop = setInterval(doBallLoop, 6000 / Math.sqrt(n));break;
+        default:doBallLoop();ballLoop = setInterval(doBallLoop, 1500 / Math.sqrt(n));break;
     }
 }
