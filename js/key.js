@@ -59,7 +59,7 @@ function resize(){
     marginTop = (canvas.height - length) / 2;
     marginMin = marginLeft < marginTop ? marginLeft : marginTop;
     ctx.translate(marginLeft, marginTop);
-    if (document.getElementById("game").style.display !== "none") {
+    if (document.getElementById("game").style.display === "block") {
         player.x *= ratio;
         player.y *= ratio;
         bonus.x *= ratio;
