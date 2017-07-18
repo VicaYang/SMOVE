@@ -1,8 +1,8 @@
 function drawGrid() {
     ctx.lineWidth = 1.0;
     ctx.strokeStyle = "#FFFFFF";
-    let width = 2 * unit;
-    let space = unit / 5;
+    let width = 2 * game.unit;
+    let space = game.unit / 5;
     ctx.beginPath();
     for (let loc = width; loc < length  ; loc += width) {
         ctx.moveTo(loc, space);ctx.lineTo(loc,length-space);
@@ -11,11 +11,11 @@ function drawGrid() {
     ctx.stroke();
     ctx.beginPath();
     ctx.lineWidth = 3.0;
-    ctx.moveTo(unit, 0);
-    ctx.lineTo(length-unit, 0);ctx.arc(length-unit,unit,unit,1.5*Math.PI,2*Math.PI);
-    ctx.lineTo(length, length-unit);ctx.arc(length-unit,length-unit,unit,0,0.5*Math.PI);
-    ctx.lineTo(unit, length);ctx.arc(unit,length-unit,unit,0.5*Math.PI,1*Math.PI);
-    ctx.lineTo(0,unit);ctx.arc(unit,unit,unit,1*Math.PI,1.5*Math.PI);
+    ctx.moveTo(game.unit, 0);
+    ctx.lineTo(length-game.unit, 0);ctx.arc(length-game.unit,game.unit,game.unit,1.5*Math.PI,2*Math.PI);
+    ctx.lineTo(length, length-game.unit);ctx.arc(length-game.unit,length-game.unit,game.unit,0,0.5*Math.PI);
+    ctx.lineTo(game.unit, length);ctx.arc(game.unit,length-game.unit,game.unit,0.5*Math.PI,1*Math.PI);
+    ctx.lineTo(0,game.unit);ctx.arc(game.unit,game.unit,game.unit,1*Math.PI,1.5*Math.PI);
     ctx.stroke();
 }
 function drawCircle(ctx, x, y, radius, color) {
@@ -27,22 +27,22 @@ function drawCircle(ctx, x, y, radius, color) {
 function drawPlayer() {
     if (player.step !== 0) {
         player.step--;
-        drawCircle(ctx, player.x, player.y, unit * 0.5 + 2, bgrColor.color);
+        drawCircle(ctx, player.x, player.y, game.unit * 0.5 + 2, bgrColor.color);
         switch(player.direction) {
-            case 0: player.y -= unit / 10; break;
-            case 1: player.x += unit / 10; break;
-            case 2: player.y += unit / 10; break;
-            case 3: player.x -= unit / 10; break;
+            case 0: player.y -= game.unit / 10; break;
+            case 1: player.x += game.unit / 10; break;
+            case 2: player.y += game.unit / 10; break;
+            case 3: player.x -= game.unit / 10; break;
             default: break;
         }
     }
-    drawCircle(ctx, player.x, player.y, unit * 0.5, "#FFFFFF");
+    drawCircle(ctx, player.x, player.y, game.unit * 0.5, "#FFFFFF");
 }
 function drawBonus() {
-    let dx = unit / 3 * Math.cos(bonus.deg);
-    let dy = unit / 3 * Math.sin(bonus.deg);
-    drawCircle(ctx, bonus.x, bonus.y, unit / 3 + 2, bgrColor.color);
-    ctx.fillStyle = (score % 10 === 9) ? '#E9F335' : '#3163F5';
+    let dx = game.unit / 3 * Math.cos(bonus.deg);
+    let dy = game.unit / 3 * Math.sin(bonus.deg);
+    drawCircle(ctx, bonus.x, bonus.y, game.unit / 3 + 2, bgrColor.color);
+    ctx.fillStyle = (game.score % 10 === 9) ? '#E9F335' : '#3163F5';
     ctx.beginPath();
     ctx.moveTo(bonus.x + dx, bonus.y + dy);
     ctx.lineTo(bonus.x - dy, bonus.y + dx);
@@ -54,19 +54,19 @@ function drawBonus() {
 function drawBall(draw) {
     let remove = new Array();
     for (let i = 0, len = balls.length; i < len; ++i) {
-        drawCircle(ctx, balls[i].x, balls[i].y, unit * 0.6 + 2, bgrColor.color);
+        drawCircle(ctx, balls[i].x, balls[i].y, game.unit * 0.6 + 2, bgrColor.color);
         drawSmallBall(balls[i], false);
         switch(balls[i].direction) {
-            case 0: balls[i].y -= balls[i].speed; if (balls[i].y < -marginTop - 5 * unit) remove.push(i); break;
-            case 1: balls[i].x += balls[i].speed; if (balls[i].x > canvas.width - marginLeft + 5 * unit) remove.push(i); break;
-            case 2: balls[i].y += balls[i].speed; if (balls[i].y > canvas.height - marginTop + 5 * unit) remove.push(i); break;
-            case 3: balls[i].x -= balls[i].speed; if (balls[i].x < -marginTop - 5 * unit) remove.push(i); break;
+            case 0: balls[i].y -= balls[i].speed; if (balls[i].y < -marginTop - 5 * game.unit) remove.push(i); break;
+            case 1: balls[i].x += balls[i].speed; if (balls[i].x > canvas.width - marginLeft + 5 * game.unit) remove.push(i); break;
+            case 2: balls[i].y += balls[i].speed; if (balls[i].y > canvas.height - marginTop + 5 * game.unit) remove.push(i); break;
+            case 3: balls[i].x -= balls[i].speed; if (balls[i].x < -marginTop - 5 * game.unit) remove.push(i); break;
         }
         drawSmallBall(balls[i], true);
-        drawCircle(ctx, balls[i].x, balls[i].y, unit * 0.6, "#000000");
+        drawCircle(ctx, balls[i].x, balls[i].y, game.unit * 0.6, "#000000");
     }
     for (let i = remove.length - 1; i >= 0; --i) {
-        drawCircle(ctx, balls[i].x, balls[i].y, unit * 0.6 + 2, bgrColor.color);
+        drawCircle(ctx, balls[i].x, balls[i].y, game.unit * 0.6 + 2, bgrColor.color);
         drawSmallBall(balls[i], false);
         balls.splice(i, 1);
     }
@@ -75,12 +75,12 @@ function drawSmallBall(ball, draw) {
     let stepX = 0;
     let stepY = 0;
     switch(ball.direction) {
-        case 0: stepY = unit / 2.5; break;
-        case 1: stepX = -unit / 2.5; break;
-        case 2: stepY = -unit / 2.5; break;
-        case 3: stepX = unit / 2.5; break;
+        case 0: stepY = game.unit / 2.5; break;
+        case 1: stepX = -game.unit / 2.5; break;
+        case 2: stepY = -game.unit / 2.5; break;
+        case 3: stepX = game.unit / 2.5; break;
     }
-    let r = draw ? unit / 7 : unit / 7 + 2;
+    let r = draw ? game.unit / 7 : game.unit / 7 + 2;
     if (draw) {
         for (let i = 3; i < 8; ++i) {
             drawCircle(ctx, ball.x + i * stepX, ball.y + i * stepY, r , "rgba(255,255,255," + (9-i)/9 + ")");
@@ -96,9 +96,9 @@ function drawLevelUp(){
     ctx.fillStyle = bgrColor.color; 
     ctx.fillRect(-marginLeft, -marginTop, canvas.width, canvas.height);
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(score,-marginMin * 0.8, -marginMin * 0.5);
+    ctx.fillText(game.score,-marginMin * 0.8, -marginMin * 0.5);
     ctx.fillStyle = "rgba(255,255,255," + bgrColor.textAlpha + ")";
-    ctx.fillText("Level " + level, length/3, -marginMin * 0.5);
+    ctx.fillText("Level " + game.level, length/3, -marginMin * 0.5);
 }
 function changeColor(){
     bgrColor.r += bgrColor.dr;
@@ -125,5 +125,5 @@ function drawAll(){
     ctx.fillStyle = bgrColor.color; 
     ctx.fillRect(-marginLeft, -marginTop, canvas.width, canvas.height);
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(score,-marginMin * 0.8, -marginMin * 0.5);
+    ctx.fillText(game.score,-marginMin * 0.8, -marginMin * 0.5);
 }

@@ -4,13 +4,6 @@ var length = 0;
 var marginLeft = 0;
 var marginTop = 0;
 var marginMin = 0;
-var n = 0;
-var unit = 0;
-var score = 0;
-var gameLoop = 0;
-var ballLoop = 0;
-var level = 0;
-var baseSpeed = 0;
 var bgrColor =  {
     r: 128,
     g: 223,
@@ -24,11 +17,14 @@ var bgrColor =  {
     textAlpha:0,
     alphaIncrease:true,
 }
-var bonus = {
-    x: 0,
-    y: 0,
-    deg: 0,
-    draw: true,
+var game = {
+    n: 0,
+    unit: 0,
+    baseSpeed: 0,
+    score: 0,
+    level: 0,
+    gameLoop: 0,
+    ballLoop: 0,
 }
 var player = {
     x: 0,
@@ -36,6 +32,23 @@ var player = {
     step: 0,
     direction: -1,
 }
+var bonus = {
+    x: 0,
+    y: 0,
+    deg: 0,
+    draw: true,
+}
+function ball (x, y, speed, direction) {
+    var b = new Object();
+    b.x = x;
+    b.y = y;
+    b.speed = speed;
+    b.direction = direction;
+    return b;
+}
+var balls = new Array();
+
+
 window.onload=function(){
     canvas = document.getElementById('background');
     ctx = canvas.getContext("2d");
@@ -51,18 +64,18 @@ function gameStart() {
     var ratios = document.getElementsByName("n");
     for (let i = 0, end = ratios.length; i < end; ++i) {
         if (ratios[i].checked) {
-            n = +ratios[i].value;
+            game.n = +ratios[i].value;
             break;
         }
     }
-    unit = length / 2 / n;
+    game.unit = length / 2 / game.n;
     baseSpeed = length / 150;
-    if (n % 2) {
-        bonus.x = bonus.y = n * unit;
-        player.x = player.y = (n + 2) * unit;
+    if (game.n % 2) {
+        bonus.x = bonus.y = game.n * game.unit;
+        player.x = player.y = (game.n + 2) * game.unit;
     } else {
-        bonus.x = bonus.y = (n - 1) * unit;
-        player.x = player.y = (n + 1) * unit;
+        bonus.x = bonus.y = (game.n - 1) * game.unit;
+        player.x = player.y = (game.n + 1) * game.unit;
     }
     player.step = 0;
     player.direction = -1;
@@ -73,17 +86,17 @@ function gameStart() {
     drawGrid();
     drawPlayer();
     doBallLoop();
-    gameLoop = setInterval(doGameLoop, 10);
-    ballLoop = setInterval(doBallLoop, 5000 / Math.sqrt(n));
+    game.gameLoop = setInterval(doGameLoop, 10);
+    game.ballLoop = setInterval(doBallLoop, 5000 / Math.sqrt(game.n));
 
 }
 function gameOver() {
     ctx.clearRect(-marginLeft, -marginTop, canvas.width, canvas.height);
     document.getElementById("game").style.display="none";
     document.getElementById("over").style.display="block";
-    document.getElementById("score").innerHTML="Your score is " + score;
-    score = 0;
-    level = 0;
+    document.getElementById("score").innerHTML="Your score is " + game.score;
+    game.score = 0;
+    game.level = 0;
     balls.splice(0, balls.length);
 }
 function gameRestart() {
@@ -91,16 +104,6 @@ function gameRestart() {
     document.getElementById("begin").style.display="block";
 }
 
-
-function ball (x, y, speed, direction) {
-    var b = new Object();
-    b.x = x;
-    b.y = y;
-    b.speed = speed;
-    b.direction = direction;
-    return b;
-}
-var balls = new Array();
 
 function doGameLoop() {
     bonus.deg += 0.01;
@@ -118,29 +121,29 @@ function doGameLoop() {
 
 function check(){
     for (let elem of balls) {
-        if ((player.x - elem.x)*(player.x - elem.x)+(player.y - elem.y)*(player.y - elem.y) < 1.21 * unit * unit) {
-            clearInterval(gameLoop);
-            clearInterval(ballLoop);
+        if ((player.x - elem.x)*(player.x - elem.x)+(player.y - elem.y)*(player.y - elem.y) < 1.21 * game.unit * game.unit) {
+            clearInterval(game.gameLoop);
+            clearInterval(game.ballLoop);
             gameOver();
             break;
         }
     }
     if (Math.abs(player.x-bonus.x)+Math.abs(player.y-bonus.y)<10) {
         generateBonus();
-        score++;
+        game.score++;
         ctx.fillStyle = bgrColor.color;
         ctx.fillRect(-marginMin, -marginMin, marginMin, marginMin);
         ctx.fillStyle="#FFFFFF";   
         ctx.font="50px Georgia";
-        ctx.fillText(score,-marginMin * 0.8,-marginMin * 0.5);    
-        if (score % 10 === 0) {
+        ctx.fillText(game.score,-marginMin * 0.8,-marginMin * 0.5);    
+        if (game.score % 10 === 0) {
             bonus.draw = false;
-            level++;
+            game.level++;
             bgrColor.index = (bgrColor.index + 1) % bgrColor.colors.length;
             bgrColor.dr = (parseInt(bgrColor.colors[bgrColor.index].substr(1,2), 16) - bgrColor.r) / 250;
             bgrColor.dg = (parseInt(bgrColor.colors[bgrColor.index].substr(3,2), 16) - bgrColor.g) / 250;
             bgrColor.db = (parseInt(bgrColor.colors[bgrColor.index].substr(5,2), 16) - bgrColor.b) / 250;
-            clearInterval(ballLoop);
+            clearInterval(game.ballLoop);
             setTimeout(nextLevel, 2500);
         }
         ctx.fillStyle = "#FFFFFF";
@@ -150,39 +153,39 @@ function check(){
 
 function generateBall(loc, direction, speed, offset){
     switch(direction) {
-        case 0: balls.push(ball((2 * loc +  1) * unit, length + marginTop + offset, speed, direction));break;
-        case 1: balls.push(ball(-marginMin - offset, (2 * loc +  1) * unit, speed, direction));break;
-        case 2: balls.push(ball((2 * loc +  1) * unit, -marginTop - offset, speed, direction));break;
-        case 3: balls.push(ball(length + marginMin + offset, (2 * loc +  1) * unit, speed, direction));break;
+        case 0: balls.push(ball((2 * loc +  1) * game.unit, length + marginTop + offset, speed, direction));break;
+        case 1: balls.push(ball(-marginMin - offset, (2 * loc +  1) * game.unit, speed, direction));break;
+        case 2: balls.push(ball((2 * loc +  1) * game.unit, -marginTop - offset, speed, direction));break;
+        case 3: balls.push(ball(length + marginMin + offset, (2 * loc +  1) * game.unit, speed, direction));break;
     }
 }
 function doBallLoop() {
-    let loc = Math.floor(Math.random() * n);
+    let loc = Math.floor(Math.random() * game.n);
     let direction = Math.floor(Math.random() * 4);
-    switch(level) {
+    switch(game.level) {
         case 0: 
             generateBall(loc, direction, baseSpeed, 0);
             break;
         case 1:
             generateBall(loc, direction, baseSpeed, 0);
-            generateBall((n - 1 - loc), (direction + 2) % 4, baseSpeed, 0);
+            generateBall((game.n - 1 - loc), (direction + 2) % 4, baseSpeed, 0);
             break;
         case 2:
             generateBall(loc, direction, baseSpeed, 0);
-            generateBall((loc + 1) % n, direction, baseSpeed * 1.3, 4 * unit);
+            generateBall((loc + 1) % game.n, direction, baseSpeed * 1.3, 4 * game.unit);
             break;
         case 3:
             generateBall(loc, direction, baseSpeed * 1.3, 0);
-            generateBall((loc + 1) % n, direction, baseSpeed * 1.3, 0);
+            generateBall((loc + 1) % game.n, direction, baseSpeed * 1.3, 0);
             break;
         case 4:
-            if (loc > n - 3) loc = n - 3;
+            if (loc > game.n - 3) loc = game.n - 3;
             generateBall(loc, direction, baseSpeed, 0);
-            generateBall(loc + 1, direction, baseSpeed, 2 * unit);
-            generateBall(loc, direction, baseSpeed, 4 * unit);
-            generateBall(loc + 2, direction, baseSpeed, 6 * unit);
-            generateBall(loc + 1, direction, baseSpeed, 8 * unit);
-            generateBall(loc + 2 % n, direction, baseSpeed, 10 * unit);
+            generateBall(loc + 1, direction, baseSpeed, 2 * game.unit);
+            generateBall(loc, direction, baseSpeed, 4 * game.unit);
+            generateBall(loc + 2, direction, baseSpeed, 6 * game.unit);
+            generateBall(loc + 1, direction, baseSpeed, 8 * game.unit);
+            generateBall(loc + 2 % game.n, direction, baseSpeed, 10 * game.unit);
             break;
         default:
             generateBall(loc, direction, 1.6 * baseSpeed, 0);
@@ -190,26 +193,26 @@ function doBallLoop() {
     }
 }
 function generateBonus() {
-    let x = (Math.floor(Math.random() * n) * 2 + 1) * unit;
-    let y = (Math.floor(Math.random() * n) * 2 + 1) * unit;
+    let x = (Math.floor(Math.random() * game.n) * 2 + 1) * game.unit;
+    let y = (Math.floor(Math.random() * game.n) * 2 + 1) * game.unit;
     if (Math.abs(x - bonus.x) < 10) {
-        bonus.x = Math.abs(x + unit -  length) < 10 ? unit : x + 2 * unit;
+        bonus.x = Math.abs(x + game.unit -  length) < 10 ? game.unit : x + 2 * game.unit;
     } else {
         bonus.x = x;
     }
     if (Math.abs(y - bonus.y) < 10) {
-        bonus.y = Math.abs(y + unit -  length) < 10 ? unit : y + 2 * unit;
+        bonus.y = Math.abs(y + game.unit -  length) < 10 ? game.unit : y + 2 * game.unit;
     } else {
         bonus.y = y;
     }
 }
 function nextLevel(){
     bonus.draw = true;
-    switch(level){
-        case 1: doBallLoop();ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(n));break;
-        case 2: doBallLoop();ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(n));break;
-        case 3:doBallLoop();ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(n));break;
-        case 4:doBallLoop();ballLoop = setInterval(doBallLoop, 6000 / Math.sqrt(n));break;
-        default:doBallLoop();ballLoop = setInterval(doBallLoop, 1500 / Math.sqrt(n));break;
+    switch(game.level){
+        case 1: doBallLoop();game.ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(game.n));break;
+        case 2: doBallLoop();game.ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(game.n));break;
+        case 3:doBallLoop();game.ballLoop = setInterval(doBallLoop, 3500 / Math.sqrt(game.n));break;
+        case 4:doBallLoop();game.ballLoop = setInterval(doBallLoop, 6000 / Math.sqrt(game.n));break;
+        default:doBallLoop();game.ballLoop = setInterval(doBallLoop, 1500 / Math.sqrt(game.n));break;
     }
 }

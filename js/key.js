@@ -3,10 +3,10 @@ function whatKey(event) {
     if (player.step === 0) {
         player.step = 20;
         switch(event.keyCode) {
-            case 37: player.direction = 3; if (player.x <= unit + 5) player.step = 0; break;//LEFT
-            case 38: player.direction = 0; if (player.y <= unit + 5) player.step = 0; break;//UP
-            case 39: player.direction = 1; if (player.x >= length - unit - 5) player.step = 0;  break;//RIGHT
-            case 40: player.direction = 2; if (player.y >= length - unit - 5) player.step = 0; break;//DOWN
+            case 37: player.direction = 3; if (player.x <= game.unit + 5) player.step = 0; break;//LEFT
+            case 38: player.direction = 0; if (player.y <= game.unit + 5) player.step = 0; break;//UP
+            case 39: player.direction = 1; if (player.x >= length - game.unit - 5) player.step = 0;  break;//RIGHT
+            case 40: player.direction = 2; if (player.y >= length - game.unit - 5) player.step = 0; break;//DOWN
             default: player.step = 0; break;
         }
     }
@@ -33,10 +33,10 @@ function handleEnd(evt) {
         if (diffY < -touchThreshold && -diffY > 1.25 * Math.abs(diffX))
             direction = 0;
         switch(direction) {
-            case 3: player.direction = 3; if (player.x <= unit + 5) player.step = 0; break;//LEFT
-            case 0: player.direction = 0; if (player.y <= unit + 5) player.step = 0; break;//UP
-            case 1: player.direction = 1; if (player.x >= length - unit - 5) player.step = 0;  break;//RIGHT
-            case 2: player.direction = 2; if (player.y >= length - unit - 5) player.step = 0; break;//DOWN
+            case 3: player.direction = 3; if (player.x <= game.unit + 5) player.step = 0; break;//LEFT
+            case 0: player.direction = 0; if (player.y <= game.unit + 5) player.step = 0; break;//UP
+            case 1: player.direction = 1; if (player.x >= length - game.unit - 5) player.step = 0;  break;//RIGHT
+            case 2: player.direction = 2; if (player.y >= length - game.unit - 5) player.step = 0; break;//DOWN
             default: player.direction = -1; player.step = 0; break;
         }
     }
@@ -47,14 +47,14 @@ function handleCancel(evt) {
     touchBegin.y = 0;
 }
 function resize(){
-    clearInterval(gameLoop);
+    clearInterval(game.gameLoop);
     ctx.translate(-marginLeft, -marginTop);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     length = canvas.width < canvas.height ? 0.5 * canvas.width : 0.5 * canvas.height;
     baseSpeed = length / 150;
-    let ratio = length / 2 / n / unit;
-    unit = length / 2 / n;
+    let ratio = length / 2 / game.n / game.unit;
+    game.unit = length / 2 / game.n;
     marginLeft = (canvas.width - length) / 2;
     marginTop = (canvas.height - length) / 2;
     marginMin = marginLeft < marginTop ? marginLeft : marginTop;
@@ -70,6 +70,6 @@ function resize(){
             elem.speed *= ratio;
         }
         drawAll();
-        gameLoop = setInterval(doGameLoop, 10);
+        game.gameLoop = setInterval(doGameLoop, 10);
     }
 }
